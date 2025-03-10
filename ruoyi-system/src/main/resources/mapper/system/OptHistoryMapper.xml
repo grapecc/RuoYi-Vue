@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OptHistoryMapper">
+    
+    <resultMap type="OptHistory" id="OptHistoryResult">
+        <result property="name"    column="name"    />
+        <result property="id"    column="id"    />
+        <result property="realUrl"    column="real_url"    />
+        <result property="matUrl"    column="mat_url"    />
+        <result property="mkUrl"    column="mk_url"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUser"    column="create_user"    />
+    </resultMap>
+
+    <sql id="selectOptHistoryVo">
+        select name, id, real_url, mat_url, mk_url, create_time, create_user from opt_history
+    </sql>
+
+    <select id="selectOptHistoryList" parameterType="OptHistory" resultMap="OptHistoryResult">
+        <include refid="selectOptHistoryVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="realUrl != null  and realUrl != ''"> and real_url = #{realUrl}</if>
+            <if test="matUrl != null  and matUrl != ''"> and mat_url = #{matUrl}</if>
+            <if test="mkUrl != null  and mkUrl != ''"> and mk_url = #{mkUrl}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+        </where>
+    </select>
+    
+    <select id="selectOptHistoryById" parameterType="Long" resultMap="OptHistoryResult">
+        <include refid="selectOptHistoryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertOptHistory" parameterType="OptHistory">
+        insert into opt_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="id != null">id,</if>
+            <if test="realUrl != null">real_url,</if>
+            <if test="matUrl != null">mat_url,</if>
+            <if test="mkUrl != null">mk_url,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createUser != null">create_user,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="id != null">#{id},</if>
+            <if test="realUrl != null">#{realUrl},</if>
+            <if test="matUrl != null">#{matUrl},</if>
+            <if test="mkUrl != null">#{mkUrl},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createUser != null">#{createUser},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOptHistory" parameterType="OptHistory">
+        update opt_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="realUrl != null">real_url = #{realUrl},</if>
+            <if test="matUrl != null">mat_url = #{matUrl},</if>
+            <if test="mkUrl != null">mk_url = #{mkUrl},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOptHistoryById" parameterType="Long">
+        delete from opt_history where id = #{id}
+    </delete>
+
+    <delete id="deleteOptHistoryByIds" parameterType="String">
+        delete from opt_history where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

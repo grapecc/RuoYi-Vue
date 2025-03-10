@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.UserScoreMapper">
+    
+    <resultMap type="UserScore" id="UserScoreResult">
+        <result property="userId"    column="user_id"    />
+        <result property="dateTime"    column="date_time"    />
+        <result property="score"    column="score"    />
+        <result property="addFlag"    column="addFlag"    />
+        <result property="note"    column="note"    />
+    </resultMap>
+
+    <sql id="selectUserScoreVo">
+        select user_id, date_time, score, addFlag, note from user_score
+    </sql>
+
+    <select id="selectUserScoreList" parameterType="UserScore" resultMap="UserScoreResult">
+        <include refid="selectUserScoreVo"/>
+        <where>  
+            <if test="dateTime != null "> and date_time = #{dateTime}</if>
+            <if test="score != null  and score != ''"> and score = #{score}</if>
+            <if test="addFlag != null  and addFlag != ''"> and addFlag = #{addFlag}</if>
+            <if test="note != null  and note != ''"> and note = #{note}</if>
+        </where>
+    </select>
+    
+    <select id="selectUserScoreByUserId" parameterType="Long" resultMap="UserScoreResult">
+        <include refid="selectUserScoreVo"/>
+        where user_id = #{userId}
+    </select>
+        
+    <insert id="insertUserScore" parameterType="UserScore">
+        insert into user_score
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="dateTime != null">date_time,</if>
+            <if test="score != null">score,</if>
+            <if test="addFlag != null">addFlag,</if>
+            <if test="note != null">note,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="dateTime != null">#{dateTime},</if>
+            <if test="score != null">#{score},</if>
+            <if test="addFlag != null">#{addFlag},</if>
+            <if test="note != null">#{note},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserScore" parameterType="UserScore">
+        update user_score
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dateTime != null">date_time = #{dateTime},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="addFlag != null">addFlag = #{addFlag},</if>
+            <if test="note != null">note = #{note},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteUserScoreByUserId" parameterType="Long">
+        delete from user_score where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteUserScoreByUserIds" parameterType="String">
+        delete from user_score where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>
